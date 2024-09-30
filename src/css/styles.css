@@ -1,18 +1,94 @@
-/**
-  |============================
-  | include css partials with
-  | default @import url()
-  |============================
-*/
-/* Common styles */
 @import url('./reset.css');
 @import url('./base.css');
 @import url('./container.css');
 @import url('./animations.css');
 
-/* Sections style */
 @import url('./header.css');
 @import url('./vite-promo.css');
 @import url('./badges.css');
 @import url('./back-link.css');
 @import url('./footer.css');
+
+#form-input{
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 8px;
+  width: 371px;
+  height: 40px;
+  margin-top: 36px;
+  margin-bottom: 32px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.form-found{
+  gap: 8px;
+  border-radius: 4px;
+  width: 272px;
+  height: 38px;
+  border: 1px solid #808080;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #808080;
+}
+
+.form-btn{
+  border-radius: 8px;
+  padding: 8px 16px;
+  width: 91px;
+  height: 100%;
+  background: #4e75ff;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #fff;
+  border: none;
+}
+
+.gallery{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.gallery-item{
+  width: calc((100% - 40px) / 5);
+  border: 2px solid black;
+}
+
+.info-container{
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.info {
+  display: flex;
+  gap: 10px; 
+  margin-top: 10px;
+
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.name-info {
+  font-weight: bold;
+  margin-bottom: 5px; 
+  color: #555;
+}
+
+.loading{
+  text-align: center;
+}
+.hidden{
+  display: none
+}
