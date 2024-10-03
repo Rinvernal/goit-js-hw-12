@@ -1,12 +1,10 @@
 export function renderImages(images) {
   const gallery = document.querySelector(".gallery");
-  gallery.innerHTML = "";
 
-  const markup = images.map(image => `
-    <li class="gallery-item">
+  const markup = images.map(image => 
+    `<li class="gallery-item">
       <div class="info-container">
         <a href="${image.largeImageURL}" class="link">
-        
           <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
         </a>
         <div class="info">
@@ -16,9 +14,8 @@ export function renderImages(images) {
           <p class="info-item"><span class="name-info">Downloads</span> ${image.downloads}</p>
         </div>
       </div>
-    </li>
-  `).join('');  
+    </li>`
+  ).join('');  
 
-  gallery.innerHTML = markup;
+  gallery.insertAdjacentHTML('beforeend', markup);
 }
-

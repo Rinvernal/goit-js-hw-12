@@ -92,3 +92,14 @@
 .hidden{
   display: none
 }
+.box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#load-more{
+  width: 100px;
+  height: 30px;
+}

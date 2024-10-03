@@ -8,21 +8,61 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const form = document.querySelector("#form-input");
 const gallery = document.querySelector(".gallery");
 const loading = document.querySelector("#loadingId");
-
+const loadMore = document.querySelector('#load-more');
 let lightbox;
+let currentPage = 1;
+let query = '';
+const perPage = 15;
 
-function showLoader() {
-  loading.classList.remove('hidden');
-}
+loadMore.classList.add('hidden');
 
-function hideLoader() {
-  loading.classList.add('hidden');
-}
+loadMore.addEventListener("click", async () => {
+  currentPage++;
+  showLoader();
 
-form.addEventListener("submit", event => {
+  try {
+    const { hits: images, totalHits } = await fetchImages(query, currentPage, perPage);
+    hideLoader();
+
+    if (images.length === 0) {
+      iziToast.error({
+        message: 'Sorry, there are no more images to load.',
+        position: 'topCenter',
+      });
+      loadMore.classList.add('hidden');
+    } else {
+      renderImages(images);
+
+      manageLightbox();
+
+      const { height: cardHeight } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: "smooth",
+      });
+
+      const totalLoadedImages = document.querySelectorAll('.gallery-item').length;
+      if (totalLoadedImages >= totalHits) {
+        loadMore.classList.add('hidden');
+        iziToast.info({
+          message: "We're sorry, but you've reached the end of search results.",
+          position: 'topCenter',
+        });
+      }
+    }
+  } catch (error) {
+    hideLoader();
+    iziToast.error({
+      message: 'Something went wrong, please try again later.',
+      position: 'topCenter',
+    });
+  }
+});
+
+form.addEventListener("submit", async event => {
   event.preventDefault();
-  const query = document.querySelector('input[name = "Search"]').value.trim();
-  
+  query = document.querySelector('input[name="Search"]').value.trim();
+
   if (query === '') {
     iziToast.error({
       message: 'Please enter a search term.',
@@ -33,43 +73,57 @@ form.addEventListener("submit", event => {
     return;
   }
 
+  currentPage = 1;
+  gallery.innerHTML = ''; 
   showLoader();
 
-  fetchImages(query)
-  .then(images => {
+  try {
+    const { hits: images, totalHits } = await fetchImages(query, currentPage, perPage);
     hideLoader();
 
     if (images.length === 0) {
       iziToast.error({
-      message: 'Sorry, there are no images matching your search query. Please try again!',
-      position: 'topCenter',
-     });
-     gallery.innerHTML = '';
-     form.reset();
-    } else {
-      gallery.innerHTML = '';
-      renderImages(images); 
-      
-      if (lightbox) {
-        lightbox.destroy();
-      }
-
-      lightbox = new SimpleLightbox('.gallery a', {
-        captionsData: "alt",
-        captionPosition: "bottom",
-        captionDelay: 250,
+        message: 'Sorry, there are no images matching your search query. Please try again!',
+        position: 'topCenter',
       });
-      }
+      gallery.innerHTML = '';
       form.reset();
-  })
-  .catch(error => {
+      loadMore.classList.add('hidden');
+    } else {
+      renderImages(images);
+      manageLightbox();
+      if (totalHits > perPage) {
+        loadMore.classList.remove('hidden');
+      } else {
+        loadMore.classList.add('hidden');
+      }
+    }
+  } catch (error) {
     hideLoader();
-
     iziToast.error({
       message: 'Something went wrong, please try again later.',
       position: 'topCenter',
     });
     gallery.innerHTML = '';
     form.reset();
-  })
+  }
 });
+
+function showLoader() {
+  loading.classList.remove('hidden');
+}
+
+function hideLoader() {
+  loading.classList.add('hidden');
+}
+
+function manageLightbox() {
+  if (lightbox) {
+    lightbox.destroy();
+  }
+  lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: "alt",
+    captionPosition: "bottom",
+    captionDelay: 250,
+  });
+}
